@@ -7,25 +7,25 @@ if (!isset($_SESSION['loggedin'])) {
 
 $conn = new mysqli('localhost', 'root', '', 'akbare_organic_dairy');
 
-// Fetch today's sales data for the pie chart and total sold prices
+// Fetch today's sales detai;s for the pie chart and total sold prices
 $sales_data = $conn->query("SELECT item_id, SUM(selling_quantity) as total_quantity, SUM(selling_price * selling_quantity) as total_selling_price FROM sales WHERE selling_date = CURDATE() GROUP BY item_id");
 
 $sales_distribution = [];
 
-$total_selling_price_today = 0; // Initialize total selling price
-$total_profit_today = 0; // Initialize total profit
-$total_loss_today = 0; // Initialize total loss
+$total_selling_price_today = 0; 
+$total_profit_today = 0; 
+$total_loss_today = 0; 
 
 while ($row = $sales_data->fetch_assoc()) {
     $item = $conn->query("SELECT item_name, cost_price FROM items WHERE id = " . $row['item_id'])->fetch_assoc();
-    if ($item) { // Check if item exists
+    if ($item) { 
         $sales_distribution[] = [
             'name' => $item['item_name'],
             'value' => $row['total_quantity']
         ];
         $total_selling_price_today += $row['total_selling_price'];
 
-        // Calculate profit or loss for the current item
+        // Calculate profit or loss
         $total_item_cost = $item['cost_price'] * $row['total_quantity'];
         if ($total_item_cost < $row['total_selling_price']) {
             $total_profit_today += ($row['total_selling_price'] - $total_item_cost);
@@ -71,10 +71,10 @@ while ($row_yesterday = $sales_data_yesterday->fetch_assoc()) {
 // Fetch yesterday's sales data
 $sales_data_yesterday = $conn->query("SELECT item_id, SUM(selling_quantity) as total_quantity, SUM(selling_price * selling_quantity) as total_selling_price FROM sales WHERE selling_date = CURDATE() - INTERVAL 1 DAY GROUP BY item_id");
 
-$total_selling_price_yesterday = 0; // Initialize total selling price for yesterday
+$total_selling_price_yesterday = 0;  
 
-$total_profit_yesterday = 0; // Initialize yesterday's total profit
-$total_loss_yesterday = 0; // Initialize yesterday's total loss
+$total_profit_yesterday = 0; 
+$total_loss_yesterday = 0;  
 
 while ($row_yesterday = $sales_data_yesterday->fetch_assoc()) {
     $item = $conn->query("SELECT item_name, cost_price FROM items WHERE id = " . $row_yesterday['item_id'])->fetch_assoc();
@@ -90,25 +90,25 @@ while ($row_yesterday = $sales_data_yesterday->fetch_assoc()) {
     }
 }
 
-// You can now calculate total profit and loss separately
+
 $total_profit_loss_today = $total_profit_today - $total_loss_today;
 $total_profit_loss_yesterday = $total_profit_yesterday - $total_loss_yesterday;
 
-// Handle item delete request
+// item delete 
 if (isset($_GET['delete_item_id'])) {
     $delete_id = $_GET['delete_item_id'];
     $conn->query("UPDATE items SET is_active = 0 WHERE id='$delete_id'");
     header("Location: dashboard.php?success=Item marked as inactive");
 }
 
-// Handle sale delete request
+// sale delete request
 if (isset($_GET['delete_sale_id'])) {
     $delete_sale_id = $_GET['delete_sale_id'];
     $conn->query("DELETE FROM sales WHERE id='$delete_sale_id'");
     header("Location: dashboard.php?success=Sale record deleted successfully");
 }
 
-// Handle sell request
+// sell request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $item_id = $_POST['item_id'];
     $selling_quantity = $_POST['selling_quantity'];

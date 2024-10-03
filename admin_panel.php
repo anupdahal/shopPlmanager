@@ -1,20 +1,17 @@
 <?php
 session_start();
-include 'db_connect.php';  // File to connect to the database
+include 'db_connect.php'; 
 
-// Handle logout
 if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: admin_panel.php");
     exit();
 }
 
-// Handle login
 if (isset($_POST['login'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Fetch admin credentials from the database
     $query = "SELECT * FROM administrator WHERE name = ? AND password = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ss", $username, $password);
@@ -30,7 +27,7 @@ if (isset($_POST['login'])) {
     }
 }
 
-// Redirect to login if not logged in
+
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     ?>
 <!DOCTYPE html>

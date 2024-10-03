@@ -1,8 +1,8 @@
 <?php
-$host = 'localhost';        // same yai
-$db = 'akbare_organic_dairy';   // database ko name
-$user = 'root'; // default yai
-$pass = '';  // default yai
+$host = 'localhost';        // 
+$db = 'akbare_organic_dairy';   // 
+$user = 'root'; // 
+$pass = '';  // 
 
 $conn = new mysqli($host, $user, $pass, $db);
 
